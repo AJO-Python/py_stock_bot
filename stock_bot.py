@@ -2,6 +2,7 @@
 import tkinter as tk
 import pandas as pd
 import numpy as np
+import json
 import os
 from iexfinance.stocks import Stock
 
@@ -38,25 +39,43 @@ Price-to-Earnings:
 """
 #########################
 
-# We dont want the actual API key on git for everyone to see so its stored locally and
-# not clided with git. This just loads it in
-with open("API_KEY", "r") as f:
-    API_TOKEN = str(f.readline()).strip()
+def activate_sandbox_mode():
+    # Using the sandbox gives randomised data but gives unlimited requests for testing purposes
+    IEX_API_VERSION = "iexcloud-sandbox"
+    os.environ["IEX_API_VERSION"] = IEX_API_VERSION
 
-# Using the sandbox gives randomised data but gives unlimited requests for testing purposes
-IEX_API_VERSION = "iexcloud-sandbox"
-os.environ["IEX_API_VERSION"] = IEX_API_VERSION
+class stock_obj():
+    def __init__(self, ticker, sandbox_mode=False):
+        self.ticker = ticker
+        self.get_API_token(sandbox=sandbox_mode)
+        self.set_historical_prices()
 
-Tesla = Stock("TSLA", token=API_TOKEN, output_format="json")
+    def set_historical_prices(self):
+        self.api = Stock(self.ticker, token=self.API_TOKEN, output_format="json")
+        print(self.api.get_historical_prices())
+        #for key, value in self.historical_prices:
+        #    print(key, value)
 
-Tesla_history = Tesla.get_historical_prices()
-# Numpy lets us deal with arrays easier
-# Some of the data may come in as Pandas dataframe so can change if needed
-price_history = np.array(Tesla_history)
-print(price_history)
+
+    def get_API_token(self, sandbox=False):
+        # We dont want the actual API key on git for everyone to see so its stored locally and
+        # not included with git. This just loads it in
+        api_file = "API_KEY" if not sandbox else "SANDBOX_API_KEY"
+        with open(api_file, "r") as f:
+            self.API_TOKEN = str(f.readline()).strip()
+
+def main():
+    activate_sandbox_mode()
+    Tesla = stock_obj("TSLA", True)
+
+
+
+
+if __name__ == "__main__":
+    main()
+
 
 """
-
 print(price_history[0]) --> 
 {
     'close': 627.96,
