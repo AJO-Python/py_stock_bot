@@ -132,12 +132,20 @@ class stock_obj():
         return 0
 
     def stock_value(self):
-        return sum(
+        self.value = sum(
                 self.value_price("price_cur"),
                 self.value_price("price_4yr"),
                 self.value_price_trend(),
                 self.value_book(),
-                self.value()
+                self.value_V2P(),
+                self.value_analysts(),
+                self.value_strong_analysts(),
+                self.value_dividends(),
+                self.value_margins(),
+                self.value_volumes(),
+                self.value_P2E(),
+                )
+        return self.value
 
     def get_time_series(self, data="REPORTED_FINANCIALS"):
         test_url = f"{self.url_base}/stock/{self.ticker}/quote/latestPrice{self.token}"
