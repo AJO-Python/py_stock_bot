@@ -95,8 +95,18 @@ class stock_obj():
         :param str price_att: Either price_cur or price_historic
         Gives stock value based on price and past price
         """
-        scores = [(0, 1), (1, 2), (2, 5), (5, 10), (10, 15),
-                  (15, 20), (20, 30), (30, 50), (50, 100), (100,999999999)]
+        scores = {
+                (0, 1)              :1,
+                (1, 2)              :2,
+                (2, 5)              :3,
+                (5, 10)             :4,
+                (10, 15)            :5,
+                (15, 20)            :6,
+                (20, 30)            :7,
+                (30, 50)            :8,
+                (50, 100)           :9,
+                (100, float("inf")  :10,
+                }
         for i, lims in enumerate(scores):
             price = getattr(self, price_att)[self.price_key]
             if (price >= lims[0]) and (price < lims[1]):
@@ -108,18 +118,26 @@ class stock_obj():
         print(trend)
         # scores = dict(percentage_range : att_value)
         scores = {
-                  (-999999999, -50.5) : 1,
-                  (-50.5, -11.5) : 2,
-                  (-11.5, -0.5) : 5,
-                  (-0.5, 1,5) : 6,
-                  (1.5,10.5) : 7,
-                  (10.5,99.5) : 9,
-                  (99.5,9999999999) : 10
+                (float("-inf"), -50.5) : 1,
+                (-50.5, -11.5)      : 2,
+                (-11.5, -0.5)       : 5,
+                (-0.5, 1,5)         : 6,
+                (1.5, 10.5)         : 7,
+                (10.5, 99.5)        : 9,
+                (99.5, float("inf") : 10,
                 } 
         for lims in scores.keys():
             if (trend >= lims[0]) and (trend < lims[1]):
                 return scores[lims]
         return 0
+
+    def stock_value(self):
+        return sum(
+                self.value_price("price_cur"),
+                self.value_price("price_4yr"),
+                self.value_price_trend(),
+                self.value_book(),
+                self.value()
 
     def get_time_series(self, data="REPORTED_FINANCIALS"):
         test_url = f"{self.url_base}/stock/{self.ticker}/quote/latestPrice{self.token}"
