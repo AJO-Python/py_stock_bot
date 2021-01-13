@@ -1,4 +1,7 @@
-Stcok.advanced_stats() -->
+Advanced Stats
+Returns everything in key stats plus additional advanced stats such as EBITDA, ratios, key financial data, and more.
+GET /stock/{symbol}/advanced-stats
+JSON RESPONSE
 {
     // ...key stats
     "beta": 1.4661365583766115,
@@ -23,4 +26,21 @@ Stcok.advanced_stats() -->
     "week52highDate": "2019-11-19",
     "week52lowDate": "2019-01-03",
     "putCallRatio": .7611902044412406,
+}
+
+Analyst Recommendations
+Pulls data from the last four months.
+GET /stock/{symbol}/recommendation-trends
+JSON RESPONSE
+{
+    "consensusEndDate": 1542240000000,
+    "consensusStartDate": 1541462400000,
+    "corporateActionsAppliedDate": 1055721600000,
+    "ratingBuy": 8,
+    "ratingOverweight": 2,
+    "ratingHold": 1,
+    "ratingUnderweight": 1,
+    "ratingSell": 1,
+    "ratingNone": 2,
+    "ratingScaleMark": 1.042857
 }
