@@ -1,1 +1,54 @@
-# py_stock_bot
+## py_stock_bot
+### Stock attributes
+- Stock price > $100
+    - ~~APi call~~
+    - ~~Write value calculation function~~
+- Stock price > $100 4yrs ago
+    - ~~APi call~~
+    - ~~Write value calculation function~~
+- Stock price trending upwards from 4yrs ago
+    - ~~APi call~~
+    - ~~Write value calculation function~~
+        - Find % difference between stock price
+- Stock with book value > $100
+    - ~~APi call~~
+    - ~~Write value calculation function~~
+        - API returns price-to-book ratio
+        - Divide current price by P2B 
+- Stock price > 50% of book value
+    - ~~APi call~~
+    - ~~Write value calculation function~~
+        - Compare stock price and book price
+- 5 or more analysts rating "buy"
+    - API call is setup but getting data requires premium plan
+    - ~~Write value calculation function~~
+        - Uses "ratingBuy" from API
+- 5 or more analysts rating "strong buy"
+    - API call is setup but getting data requires premium plan
+    - ~~Write value calculation function~~
+        - Uses "ratingOverweight" from API
+- Dividend yield % between 7.50% and 10.49%
+    - ~~API call~~
+        - Divide annual dividends paid by price per share
+        - Sum all dividend declarations over the past year (APi returns dict for each dividend payment)
+    - ~~Write value calculation function~~
+        - Check for no dividend as an ege case
+- Operating margin > 79.50%
+    - ~~API call~~
+        - Is included with stock.adv_stats()
+    - ~~Value calculation function written~~
+- Average daily volume of shares traded > 2,000,000
+    - ~~API call~~
+        - volume-by-venue call
+        - sum by venue to get total volume
+    - ~~Value calculation function written~~
+- Price to Earning ratio between 0.1x-5.49x
+    - Value calculation function written
+
+### API info to look at
+- GET /stock/{symbol}/stats/
+    - avg10Volume
+    - avg30Volume
+    - dividendYield
+    - peRatio
+    - ChangePercent for 1, 2, 5 years
