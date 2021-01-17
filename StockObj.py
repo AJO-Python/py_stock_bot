@@ -70,7 +70,7 @@ class StockObj():
         self.set_price_cur()
         self.set_price_4yr()
         self.set_quote_param("previousVolume")
-        self.set_analyst()  # Can uncomment this when we have a paid account
+        # self.set_analyst()  # Can uncomment this when we have a paid account
         self.set_dividends()
         self.set_margins()
         self.set_volume()
@@ -112,8 +112,8 @@ class StockObj():
     def set_analyst(self):
         # raise NotImplementedError("INSIDE 'set_analyst()' \nThis function requires a paid account for the API call")
         url = f"{self.url_base}/stock/{self.ticker}/recommendation-trends/{self.token}"
-        response = requests.get(url)
-        # print(f"set_analyst() returns: {response}")
+        self.analysts = requests.get(url).json()
+        print(f"set_analyst() returns: {response}")
 
     def set_dividends(self, time_period="1y"):
         url = f"{self.url_base}/stock/{self.ticker}/dividends/{time_period}/{self.token}"
@@ -256,7 +256,7 @@ class StockObj():
         }
         for val in scores.keys():
             if analysts_buy in val:
-                print(f"Analysts buy: {analysts_buy} -> {scores[lims]}")
+                print(f"Analysts buy: {analysts_buy} -> {scores[val]}")
                 return scores[val]
         return 0
 
