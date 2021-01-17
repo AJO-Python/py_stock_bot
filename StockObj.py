@@ -110,10 +110,11 @@ class StockObj():
         print(f"quote_param: {param}: {getattr(self, param)}")
 
     def set_analyst(self):
-        # raise NotImplementedError("INSIDE 'set_analyst()' \nThis function requires a paid account for the API call")
-        url = f"{self.url_base}/stock/{self.ticker}/recommendation-trends/{self.token}"
+        try:
+            url = f"{self.url_base}/stock/{self.ticker}/recommendation-trends/{self.token}"
+        except:
+            raise NotImplementedError("INSIDE 'set_analyst()' \nThis function requires a paid account for the API call")
         self.analysts = requests.get(url).json()
-        print(f"set_analyst() returns: {response}")
 
     def set_dividends(self, time_period="1y"):
         url = f"{self.url_base}/stock/{self.ticker}/dividends/{time_period}/{self.token}"
