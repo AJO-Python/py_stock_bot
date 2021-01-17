@@ -7,7 +7,6 @@ def main():
     activate_sandbox_mode()
     stocks = ["AAPL", "TSLA", "MSFT"]
     test_stock = StockObj(random.choice(stocks), sandbox_mode=True)
-    print("Final stock value: ", test_stock.value)
 
 def activate_sandbox_mode():
     # Using the sandbox gives randomised data but gives unlimited requests for testing purposes

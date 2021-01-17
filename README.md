@@ -52,3 +52,26 @@
     - dividendYield
     - peRatio
     - ChangePercent for 1, 2, 5 years
+
+### Example output
+    Initialising MSFT...
+    In 'sandbox' mode
+    Setting API token
+    API connected
+    Making API calls...
+    quote_param: previousVolume: 30382680
+    Finished API calls
+    Valuing stock...
+    Price (price_cur): 220.31 -> 10
+    Price (price_4yr): 219.44 -> 10
+    Price trend: -0.39646372584761025 -> 6
+    Book price: 16.453323375653472 -> 6
+    Price to Book: 13.39 -> 1
+    Dividends: 0.96 -> 1
+    Margins: 0.3315750700073158 -> 0
+    Volumes: 32272011 -> 10
+    Price to Earnings: 35.45354953288813 -> 5
+    Finished valuing stock
+    MSFT total value: 49
+    MSFT took 6.40 seconds to finish
+    Final stock value:  49

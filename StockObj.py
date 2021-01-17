@@ -3,6 +3,7 @@ import numpy as np
 import json
 import requests
 import datetime
+import time
 from iexfinance.stocks import Stock
 
 
@@ -16,6 +17,7 @@ class StockObj():
         :param str ticker: Stock ticker name (4 letter code)
         :param bool sandbox_mode: Sets API to call from sandbox to preserve message request quota
         """
+        start = time.time()
         print(f"Initialising {ticker}...")
         self.price_key = price_key
         self.cloud_box = "sandbox" if sandbox_mode else "cloud"
@@ -33,6 +35,8 @@ class StockObj():
         self.set_stock_value()
         print("Finished valuing stock")
         print(f"{self.ticker} total value: {self.value}")
+        end = time.time()
+        print(f"{self.ticker} took {end - start:.2f} seconds to finish")
 
     def set_api(self):
         self.api = Stock(self.ticker, token=self.API_TOKEN, output_format="json")
