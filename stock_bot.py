@@ -1,20 +1,52 @@
 # -*-coding: UTF-8-*-
 import os
+import sys
 import random
 import requests
+import pickle
 from StockObj import StockObj
 from bs4 import BeautifulSoup
-def main():
-    #activate_sandbox_mode()
-    #stocks = ["AAPL", "TSLA", "MSFT"]
-    #test_stock = StockObj(random.choice(stocks), sandbox_mode=True)
-    tickers = scraper("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies")
-    company_values = {}
-    for tick in tickers[:10]:
-        stock = StockObj(tick, sandbox_mode=True)
-        company_values[tick] = stock.value
+
+def main(load=False):
+    if not load:
+        activate_sandbox_mode()
+        print("Scraping company tickers from wikipedia...")
+        tickers = scraper("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies")
+        company_values = {}
+        stored_stocks = []
+        print("Starting API process...")
+        for tick in tickers[:3]:
+            stock = StockObj(tick, sandbox_mode=True)
+            stored_stocks.append(stock)
+        print("=======================")
+        print("Finished API")
+        save_stocks(stored_stocks)
+    else:
+        print("Loading stocks from file...")
+        stored_stocks = load_stocks()
+    
+    company_values = get_top_companies(stored_stocks)
     print(sorted(company_values.items()))
 
+def get_top_companies(stocks):
+    comp_dict = {}
+    for comp in stocks:
+        comp_dict[comp.ticker] = comp.value
+    return comp_dict
+
+    
+def save_stocks(stocks, filename="stock_data"):
+    print(f"Saving stocks to {filename}.pickle")
+    with open(f"{filename}.pickle", "wb") as output:
+        pickle.dump(stocks, output, pickle.HIGHEST_PROTOCOL)
+    print("Stocks saved successfully")
+
+def load_stocks(filename="stock_data"):
+    print(f"Loading stocks from {filename}.pickle")
+    with open(f"{filename}.pickle", "rb") as pickled_data:
+        stocks =  pickle.load(pickled_data)
+        print("Stocks loaded successfully")
+        return stocks
 
 def activate_sandbox_mode():
     # Using the sandbox gives randomised data but gives unlimited requests for testing purposes
@@ -38,6 +70,9 @@ def scraper(url):
 
 
 if __name__ == "__main__":
-    main()
-
+    print(sys.argv)
+    if sys.argv[1] == "load":
+        main(load=True)
+    elif sys.argv[1] == "scrape":
+        main(load=False)
 

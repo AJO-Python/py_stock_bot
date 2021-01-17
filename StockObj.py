@@ -12,7 +12,7 @@ class StockObj():
     Data class for stock information returned by IEX finance API
     """
 
-    def __init__(self, ticker, sandbox_mode=False, price_key="close"):
+    def __init__(self, ticker, sandbox_mode=False, price_key="close"): 
         """
         :param str ticker: Stock ticker name (4 letter code)
         :param bool sandbox_mode: Sets API to call from sandbox to preserve message request quota
@@ -24,7 +24,9 @@ class StockObj():
         self.cloud_box = "sandbox" if sandbox_mode else "cloud"
         self.url_base = f"https://{self.cloud_box}.iexapis.com/stable"
         print(f"In '{self.cloud_box}' mode")
+
         self.ticker = ticker
+        
         print("Setting API token")
         self.set_API_token()
         self.set_api()
@@ -32,12 +34,15 @@ class StockObj():
         print("Making API calls...")
         self.make_api_calls()
         print("Finished API calls")
+        
         print("Valuing stock...")
         self.set_stock_value()
         print("Finished valuing stock")
         print(f"{self.ticker} total value: {self.value}")
+        
         end = time.time()
-        print(f"{self.ticker} took {end - start:.2f} seconds to finish")
+        self.init_time = end-start
+        print(f"{self.ticker} took {self.init_time:.2f} seconds to finish")
 
     def set_api(self):
         self.api = Stock(self.ticker, token=self.API_TOKEN, output_format="json")
