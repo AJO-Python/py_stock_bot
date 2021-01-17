@@ -1,4 +1,9 @@
 ## py_stock_bot
+
+### Web scraper
+- Gets the S&P 500 company stock tickers to use as input to value the stocks
+- Wikipedia should be a stable and up to date source for the tickers
+
 ### Stock attributes
 - Stock price > $100
     - ~~APi call~~
@@ -75,3 +80,34 @@
     MSFT total value: 49
     MSFT took 6.40 seconds to finish
     Final stock value:  49
+
+
+### API example
+print(price_history[0]) --> 
+{
+    'close': 627.96,
+    'high': 648,
+    'low': 611.9,
+    'open': 636.52,
+    'symbol': 'TSLA',
+    'volume': 47152004,
+    'id': 'IRCIROS_AHLCIESPT',
+    'key': 'SLAT',
+    'subkey': '0',
+    'date': '2020-12-11',
+    'updated': 1665606744432,
+    'changeOverTime': -0.027419367716102334,
+    'marketChangeOverTime': -0.028016315174162698,
+    'uOpen': 620.52,
+    'uClose': 639.86,
+    'uHigh': 638,
+    'uLow': 609.9,
+    'uVolume': 48141038,
+    'fOpen': 616.61,
+    'fClose': 611.86,
+    'fHigh': 625,
+    'fLow': 617.3,
+    'fVolume': 46553367,
+    'label': 'Dec 11, 20',
+    'change': -17.5287350184907,
+    'changePercent': -0.0274}

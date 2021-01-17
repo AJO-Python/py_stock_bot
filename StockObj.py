@@ -18,6 +18,7 @@ class StockObj():
         :param bool sandbox_mode: Sets API to call from sandbox to preserve message request quota
         """
         start = time.time()
+        print("==============================")
         print(f"Initialising {ticker}...")
         self.price_key = price_key
         self.cloud_box = "sandbox" if sandbox_mode else "cloud"

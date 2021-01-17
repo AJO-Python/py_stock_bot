@@ -8,7 +8,13 @@ def main():
     #activate_sandbox_mode()
     #stocks = ["AAPL", "TSLA", "MSFT"]
     #test_stock = StockObj(random.choice(stocks), sandbox_mode=True)
-    scraper("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies")
+    tickers = scraper("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies")
+    company_values = {}
+    for tick in tickers[:10]:
+        stock = StockObj(tick, sandbox_mode=True)
+        company_values[tick] = stock.value
+    print(sorted(company_values.items()))
+
 
 def activate_sandbox_mode():
     # Using the sandbox gives randomised data but gives unlimited requests for testing purposes
@@ -26,7 +32,9 @@ def scraper(url):
     # Get the div containing the stock ticker
     ticker_divs = table.find_all("a", class_="external text")
     tickers = [i.text for i in ticker_divs if i.text != "reports"]
-    print(tickers)
+    # V Uncomment to write stock tickers to a file to check scraper is working correctly
+    #print("\n".join(tickers), file=open(f"tickers-{.txt", "w"))
+    return tickers
 
 
 if __name__ == "__main__":
