@@ -6,13 +6,12 @@ import datetime
 import time
 from iexfinance.stocks import Stock
 
-
 class StockObj():
     """
     Data class for stock information returned by IEX finance API
     """
 
-    def __init__(self, ticker, sandbox_mode=False, price_key="close"): 
+    def __init__(self, ticker, sandbox_mode=True, price_key="close"):
         """
         :param str ticker: Stock ticker name (4 letter code)
         :param bool sandbox_mode: Sets API to call from sandbox to preserve message request quota
@@ -26,7 +25,6 @@ class StockObj():
         print(f"In '{self.cloud_box}' mode")
 
         self.ticker = ticker
-        
         print("Setting API token")
         self.set_API_token()
         self.set_api()
@@ -34,12 +32,10 @@ class StockObj():
         print("Making API calls...")
         self.make_api_calls()
         print("Finished API calls")
-        
         print("Valuing stock...")
         self.set_stock_value()
         print("Finished valuing stock")
         print(f"{self.ticker} total value: {self.value}")
-        
         end = time.time()
         self.init_time = end-start
         print(f"{self.ticker} took {self.init_time:.2f} seconds to finish")
@@ -173,17 +169,24 @@ class StockObj():
             (100, float("inf")): 10,
         }
         for lims in scores.keys():
-            price = getattr(self, price_att)[self.price_key]
-            if (price >= lims[0]) and (price < lims[1]):
-                print(f"Price ({price_att}): {price:.2f} -> {scores[lims]}")
-                return scores[lims]
+            try:
+                price = getattr(self, price_att)[self.price_key]
+                if (price >= lims[0]) and (price < lims[1]):
+                    print(f"Price ({price_att}): {price:.2f} -> {scores[lims]}")
+                    return scores[lims]
+            except (AttributeError, JSONDecodeError):
+                print("value_price failed.\nSetting value to 0 and moving on...")
         return 0
 
     def value_price_trend(self):
         """
         Rates highly for stock that has improved over time
         """
-        trend = 100 - ((self.price_cur[self.price_key] * 100) / self.price_4yr[self.price_key])
+        try:
+            trend = 100 - ((self.price_cur[self.price_key] * 100) / self.price_4yr[self.price_key])
+        except (AttributeError, JSONDecodeError):
+            print("value_price_trend failed.\nSetting value to 0 and moving on...")
+            return 0
         # print(trend)
         # scores = dict(percentage_range : att_value)
         scores = {
@@ -208,8 +211,12 @@ class StockObj():
         Price/Book Value = P2B ratio
         so Price/P2B = Book Value
         """
-        P2B = self.adv_stats["priceToBook"]
-        book_value = self.price_cur[self.price_key] / P2B
+        try:
+            P2B = self.adv_stats["priceToBook"]
+            book_value = self.price_cur[self.price_key] / P2B
+        except (AttributeError, JSONDecodeError):
+            print("value_book failed.\nSetting value to 0 and moving on...")
+            return 0
         scores = {
             (0, 1): 1,
             (1, 2): 2,
@@ -235,7 +242,11 @@ class StockObj():
         """
         price_cur > (book_value/2)
         """
-        P2B = self.adv_stats["priceToBook"]
+        try:
+            P2B = self.adv_stats["priceToBook"]
+        except (AttributeError, JSONDecodeError):
+            print("value_P2B failed.\nSetting value to 0 and moving on...")
+            return 0
         scores = {
             (float("-inf"), -49.5): 10,
             (-49.5, -10.5): 8,
@@ -256,8 +267,11 @@ class StockObj():
         5 or more buys
         /recommendation_trends/ratingBuy
         """
-        return 0  # REMOVE THIS LINE WHEN PREMIUM API IN USE
-        analysts_buy = self.analysts["ratingBuy"]
+        try:
+            analysts_buy = self.analysts["ratingBuy"]
+        except (AttributeError, JSONDecodeError):
+            print("value_analysts failed.\nSetting value to 0 and moving on...")
+            return 0
         scores = {
             (0): 0,
             (1): 2,
@@ -276,8 +290,11 @@ class StockObj():
         5 or more strong buys
         /recommendation_trends/ratingOverweight
         """
-        return 0  # REMOVE THIS LINE WHEN PREMUIM API IN USE
-        analysts_buy = self.analysts["ratingOverweight"]
+        try:
+            analysts_buy = self.analysts["ratingOverweight"]
+        except (AttributeError, JSONDecodeError):
+            print("value_strong_analysts failed.\nSetting value to 0 and moving on...")
+            return 0
         scores = {
             (0): 0,
             (1): 3,
@@ -294,7 +311,11 @@ class StockObj():
         """
         7.5% < yield < 10.5
         """
-        dividend_percent = self.dividend_yield * 100
+        try:
+            dividend_percent = self.dividend_yield * 100
+        except (AttributeError, JSONDecodeError):
+            print("value_dividends failed.\nSetting value to 0 and moving on...")
+            return 0
         scores = {
             (0, 1.50): 1,
             (1.50, 2.50): 4,
@@ -327,10 +348,14 @@ class StockObj():
             (69.50, 79.50): 9,
             (79.50, float("inf")): 10,
         }
-        for lims in scores.keys():
-            if (self.margin >= lims[0]) and (self.margin < lims[1]):
-                print(f"Margins: {self.margin} -> {scores[lims]}")
-                return scores[lims]
+        try:
+            for lims in scores.keys():
+                if (self.margin >= lims[0]) and (self.margin < lims[1]):
+                    print(f"Margins: {self.margin} -> {scores[lims]}")
+                    return scores[lims]
+        except (AttributeError, JSONDecodeError):
+            print("value_margins failed.\nSetting value to 0 and moving on...")
+            return 0
         return 0
 
     def value_volumes(self):
@@ -349,10 +374,14 @@ class StockObj():
             (1000000, 2000000): 9,
             (2000000, float("inf")): 10,
         }
-        for lims in scores.keys():
-            if (self.volume >= lims[0]) and (self.volume < lims[1]):
-                print(f"Volumes: {self.volume} -> {scores[lims]}")
-                return scores[lims]
+        try:
+            for lims in scores.keys():
+                if (self.volume >= lims[0]) and (self.volume < lims[1]):
+                    print(f"Volumes: {self.volume} -> {scores[lims]}")
+                    return scores[lims]
+        except (AttributeError, JSONDecodeError):
+            print("value_volumes failed.\nSetting value to 0 and moving on...")
+            return 0
         return 0
 
     def value_P2E(self):
@@ -371,10 +400,14 @@ class StockObj():
             (40.5, 100): 2,
             (100, float("inf")): 1
         }
-        for lims in scores.keys():
-            if (self.peRatio >= lims[0]) and (self.peRatio < lims[1]):
-                print(f"Price to Earnings: {self.peRatio} -> {scores[lims]}")
-                return scores[lims]
+        try:
+            for lims in scores.keys():
+                if (self.peRatio >= lims[0]) and (self.peRatio < lims[1]):
+                    print(f"Price to Earnings: {self.peRatio} -> {scores[lims]}")
+                    return scores[lims]
+        except (AttributeError, JSONDecodeError):
+            print("value_P2E failed.\nSetting value to 0 and moving on...")
+            return 0
         return 0
 
     def get_time_series(self, data="REPORTED_FINANCIALS"):
