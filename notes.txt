@@ -1,0 +1,8 @@
+LOWER API MESSAGES
+    Look for stocks > 100
+    Check for price history > 4yrs
+    
+
+Stock per line
+    <TICKER>, <attributte>, <value>, <next_attribute>, <next_value>
+
